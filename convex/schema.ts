@@ -12,5 +12,13 @@ export default defineSchema({
     .searchIndex("search_title", {
         searchField: "title",
         filterFields: ["orgId"]
-    })
+    }),
+    userFavorites: defineTable({
+        userId: v.string(),
+        orgId: v.string(),
+        boardId: v.id("boards")
+    }).index("by_board", ["boardId"])
+    .index("by_user_org", ["orgId", "userId"])
+    .index("by_user_board", ["userId", "boardId"])
+    .index("by_user_board_org", ["userId", "boardId", "orgId"])
 })

@@ -1,26 +1,24 @@
-import { useMutation } from 'convex/react'
-import React, { useState } from 'react'
+import { useState } from "react";
+import { useMutation } from "convex/react";
 
-export function useApiMutation(mutationFn: any) {
-const [pending, setPending] = useState(false)
-const apiMutation = useMutation(mutationFn)
+export const useApiMutation = (mutationFunction: any) => {
+  const [pending, setPending] = useState(false);
+  const apiMutation = useMutation(mutationFunction);
 
- const mutate = async (payload: any) => {
+  const mutate = (payload: any) => {
     setPending(true);
-    try {
-         try {
-             const result = await apiMutation(payload)
-             return result
-         } catch (err) {
-             throw err
-         }
-     } finally {
-         return setPending(false)
-     }
- }
+    return apiMutation(payload)
+      .finally(() => setPending(false))
+      .then((result) => {
+        return result;
+      })
+      .catch ((error) => {
+        throw error;
+      });
+  };
 
- return {
+  return {
+    mutate,
     pending,
-    mutate
- }
-}
+  };
+};
